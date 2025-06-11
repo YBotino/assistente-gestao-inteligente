@@ -1,6 +1,6 @@
 
 import { useState } from "react"
-import { Outlet } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { 
   Calendar,
@@ -12,8 +12,13 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-const Layout = () => {
+interface LayoutProps {
+  children?: React.ReactNode
+}
+
+const Layout = ({ children }: LayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const navigate = useNavigate()
 
   const menuItems = [
     { icon: Calendar, label: "Dashboard", path: "/" },
@@ -23,6 +28,10 @@ const Layout = () => {
     { icon: FileText, label: "Recibos/NF", path: "/documentos" },
     { icon: FileText, label: "Relatórios", path: "/relatorios" },
   ]
+
+  const handleNavigation = (path: string) => {
+    navigate(path)
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -52,6 +61,7 @@ const Layout = () => {
             <Button
               key={item.path}
               variant="ghost"
+              onClick={() => handleNavigation(item.path)}
               className={cn(
                 "w-full justify-start text-gray-700 hover:bg-blue-50 hover:text-blue-700",
                 !sidebarOpen && "px-2"
@@ -97,7 +107,7 @@ const Layout = () => {
 
         {/* Content */}
         <main className="flex-1 p-6">
-          <Outlet />
+          {children || <Outlet />}
         </main>
       </div>
     </div>
